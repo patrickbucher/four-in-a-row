@@ -186,7 +186,7 @@ func (b *Board) winner(setRow, setCol int) Field {
 			if (*b)[f.row][f.col] != playerValue {
 				break
 			}
-			count += 1
+			count++
 		}
 		chains[dir] = count
 	}
