@@ -198,6 +198,37 @@ var playMoveTests = []struct {
 			{1, 1, 1, 1, 2, 0, 0},
 		},
 	},
+	{
+		Board{
+			{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0},
+		},
+		[]playerMove{
+			{PlayerOne, 3, 0},
+			{PlayerTwo, 4, 0},
+			{PlayerOne, 4, 0},
+			{PlayerTwo, 5, 0},
+			{PlayerOne, 5, 0},
+			{PlayerTwo, 6, 0},
+			{PlayerOne, 5, 0},
+			{PlayerTwo, 6, 0},
+			{PlayerOne, 6, 0},
+			{PlayerTwo, 0, 0},
+			{PlayerOne, 6, 1},
+		},
+		Board{
+			{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 1},
+			{0, 0, 0, 0, 0, 1, 1},
+			{0, 0, 0, 0, 1, 1, 2},
+			{2, 0, 0, 1, 2, 2, 2},
+		},
+	},
 }
 
 func TestPlayMoves(t *testing.T) {
