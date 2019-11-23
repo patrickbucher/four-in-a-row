@@ -97,3 +97,62 @@ func equal(a, b []Move) bool {
 	}
 	return true
 }
+
+type playerMove struct {
+	player Field
+	move   Move
+}
+
+var playMoveTests = []struct {
+	before      Board
+	playerMoves []playerMove
+	after       Board
+}{
+	{
+		Board{
+			{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0},
+		},
+		[]playerMove{
+			{PlayerOne, 0},
+			{PlayerTwo, 1},
+			{PlayerOne, 0},
+			{PlayerTwo, 1},
+			{PlayerOne, 1},
+			{PlayerTwo, 0},
+			{PlayerOne, 2},
+			{PlayerTwo, 2},
+		},
+		Board{
+			{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0},
+			{2, 1, 0, 0, 0, 0, 0},
+			{1, 2, 2, 0, 0, 0, 0},
+			{1, 2, 1, 0, 0, 0, 0},
+		},
+	},
+}
+
+func TestPlayMoves(t *testing.T) {
+	for _, test := range playMoveTests {
+		board := test.before
+		for _, move := range test.playerMoves {
+			b, err := board.Play(move.move, move.player)
+			if err != nil {
+				t.Errorf("applied move %v to board \n%v\n: %v", move, board, err)
+			}
+			board = *b
+		}
+		got := board
+		expected := &test.after
+		if !got.Equal(expected) {
+			t.Errorf("applying moves %v to board \n%v\n, expected \n%v\n, got \n%v\n",
+				test.playerMoves, test.before, expected, got)
+		}
+	}
+}
