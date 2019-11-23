@@ -9,6 +9,9 @@ import (
 // Field is an integer representing a field's state.
 type Field int
 
+// Outcome is an integer representing the outcome of a game.
+type Outcome int
+
 const (
 	// Rows is the number of rows on the board.
 	Rows = 6
@@ -23,6 +26,15 @@ const (
 	PlayerOne = Field(1)
 	// PlayerTwo represents the field value for the second player.
 	PlayerTwo = Field(2)
+
+	// Undecided is the outcome of a running game.
+	Undecided = Outcome(-1)
+	// Tie is the outcome of a game where with all fields filled, but no player won.
+	Tie = Outcome(0)
+	// PlayerOneWins is the outcome when player one won the game.
+	PlayerOneWins = Outcome(1)
+	// PlayerTwoWins is the outcome when player two won the game.
+	PlayerTwoWins = Outcome(2)
 )
 
 // Board is a two-dimensional array of fields, representing the fields of a
@@ -85,11 +97,12 @@ var ErrorInvalidMove = errors.New("illegal move")
 
 // Play applies move of player, i.e. sets the topmost empty field in the column
 // with the index indicated by move to the value of player, returns a new
-// board, with the move applied, and a field value indicating the winner of the
-// game. If the game is not over yet, Empty is returned for the winner. The
-// original board is not modified in the process. If the move is illegal, an
+// board, with the move applied, and a outcome value indicating the winner of
+// the game. If the game is not over yet, Undecided is returned for the winner.
+// If the game is over, but no player won, Tie is the outcome. The original
+// board is not modified in the process. If the move is illegal, an
 // ErrorInvalidMove is returned.
-func (b *Board) Play(move Move, player Field) (*Board, Field, error) {
+func (b *Board) Play(move Move, player Field) (*Board, Outcome, error) {
 	validMoves := b.ValidMoves()
 	if !contains(validMoves, move) {
 		return nil, -1, ErrorInvalidMove
@@ -176,7 +189,7 @@ func (c coord) inRange() bool {
 // winner starts at the field (*b)[setRow][setCol], checks the board in all
 // directions for fields of the same player, and returns the player's Field
 // value, if found four fields in a row of that player.
-func (b *Board) winner(setRow, setCol int) Field {
+func (b *Board) winner(setRow, setCol int) Outcome {
 	chains := make(map[direction]int)
 	playerValue := (*b)[setRow][setCol]
 	for dir, sft := range shifts {
@@ -197,9 +210,23 @@ func (b *Board) winner(setRow, setCol int) Field {
 	downwards := chains[southEast] + chains[northWest] - 1
 	if vertical >= Goal || horizontal >= Goal ||
 		upwards >= Goal || downwards >= Goal {
-		return playerValue
+		return Outcome(playerValue)
 	}
-	return Empty
+	if b.hasEmptyFields() {
+		return Undecided
+	}
+	return Tie
+}
+
+func (b *Board) hasEmptyFields() bool {
+	for r := 0; r < Rows; r++ {
+		for c := 0; c < Cols; c++ {
+			if (*b)[r][c] == Empty {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func contains(moves []Move, move Move) bool {
