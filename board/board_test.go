@@ -101,6 +101,7 @@ func equal(a, b []Move) bool {
 type playerMove struct {
 	player Field
 	move   Move
+	winner Field
 }
 
 var playMoveTests = []struct {
@@ -118,22 +119,29 @@ var playMoveTests = []struct {
 			{0, 0, 0, 0, 0, 0, 0},
 		},
 		[]playerMove{
-			{PlayerOne, 0},
-			{PlayerTwo, 1},
-			{PlayerOne, 0},
-			{PlayerTwo, 1},
-			{PlayerOne, 1},
-			{PlayerTwo, 0},
-			{PlayerOne, 2},
-			{PlayerTwo, 2},
+			{PlayerOne, 0, 0},
+			{PlayerTwo, 1, 0},
+			{PlayerOne, 0, 0},
+			{PlayerTwo, 1, 0},
+			{PlayerOne, 1, 0},
+			{PlayerTwo, 0, 0},
+			{PlayerOne, 2, 0},
+			{PlayerTwo, 2, 0},
+			{PlayerOne, 2, 0},
+			{PlayerTwo, 3, 0},
+			{PlayerOne, 3, 0},
+			{PlayerTwo, 3, 0},
+			{PlayerOne, 4, 0},
+			{PlayerTwo, 4, 0},
+			{PlayerOne, 1, 1},
 		},
 		Board{
 			{0, 0, 0, 0, 0, 0, 0},
 			{0, 0, 0, 0, 0, 0, 0},
-			{0, 0, 0, 0, 0, 0, 0},
-			{2, 1, 0, 0, 0, 0, 0},
-			{1, 2, 2, 0, 0, 0, 0},
-			{1, 2, 1, 0, 0, 0, 0},
+			{0, 1, 0, 0, 0, 0, 0},
+			{2, 1, 1, 2, 0, 0, 0},
+			{1, 2, 2, 1, 2, 0, 0},
+			{1, 2, 1, 2, 1, 0, 0},
 		},
 	},
 }
@@ -142,9 +150,13 @@ func TestPlayMoves(t *testing.T) {
 	for _, test := range playMoveTests {
 		board := test.before
 		for _, move := range test.playerMoves {
-			b, err := board.Play(move.move, move.player)
+			b, winner, err := board.Play(move.move, move.player)
 			if err != nil {
 				t.Errorf("applied move %v to board \n%v\n: %v", move, board, err)
+			}
+			if winner != move.winner {
+				t.Errorf("expected winner %d for board \n%v\n, got winner %d",
+					move.winner, b, winner)
 			}
 			board = *b
 		}
