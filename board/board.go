@@ -104,7 +104,7 @@ var ErrorInvalidMove = errors.New("illegal move")
 // ErrorInvalidMove is returned.
 func (b *Board) Play(move Move, player Field) (*Board, Outcome, error) {
 	validMoves := b.ValidMoves()
-	if !contains(validMoves, move) {
+	if !Contains(validMoves, move) {
 		return nil, -1, ErrorInvalidMove
 	}
 	newBoard := b.Copy()
@@ -229,7 +229,9 @@ func (b *Board) hasEmptyFields() bool {
 	return false
 }
 
-func contains(moves []Move, move Move) bool {
+// Contains checks if move is contained in moves, returns true if so, and else
+// otherwise.
+func Contains(moves []Move, move Move) bool {
 	for _, m := range moves {
 		if m == move {
 			return true
