@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 )
 
 func main() {
@@ -21,13 +22,26 @@ func main() {
 	playerTwo := player.NewRandomPlayer(board.PlayerTwo)
 	playerOneWins, playerTwoWins, ties, undecided := 0, 0, 0, 0
 	output := *numberOfRounds == 1
+	ch := make(chan board.Outcome)
+	var wg sync.WaitGroup
 	for i := 0; i < *numberOfRounds; i++ {
-		duel := game.NewGame(playerOne, playerTwo)
-		outcome, err := duel.Play(output)
-		if err != nil {
-			log.Printf("play duel: %v\n", err)
-			os.Exit(1)
-		}
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			duel := game.NewGame(playerOne, playerTwo)
+			outcome, err := duel.Play(output)
+			if err != nil {
+				log.Printf("play duel: %v\n", err)
+				return
+			}
+			ch <- outcome
+		}()
+	}
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+	for outcome := range ch {
 		if outcome == board.PlayerOneWins {
 			if output {
 				fmt.Println("Player One Wins")
