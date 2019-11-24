@@ -31,3 +31,10 @@ Run a tournament with multiple rounds for each match/rematch pairing:
     --------  ----------------  --------  --------  --------  --------  --------
            1  Randy Random I.         36        20        12         8         0
            2  Randy Random II.        24        20         8        12         0
+
+## TODO
+
+- [ ] interactive gameplay using one or two `STDIN` players
+- [ ] AI player that tries to find a winning move for the current round
+- [ ] AI player that applies Minimax algorithm for the next `n` rounds
+- [ ] AI player applying evaluation function on current board (three in a row with potential)
