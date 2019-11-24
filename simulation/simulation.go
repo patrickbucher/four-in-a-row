@@ -19,19 +19,41 @@ func main() {
 	}
 	playerOne := player.NewRandomPlayer(board.PlayerOne)
 	playerTwo := player.NewRandomPlayer(board.PlayerTwo)
-	duel := game.NewGame(playerOne, playerTwo)
-	outcome, err := duel.Play()
-	if err != nil {
-		log.Printf("play duel: %v\n", err)
-		os.Exit(1)
+	playerOneWins, playerTwoWins, ties, undecided := 0, 0, 0, 0
+	output := *numberOfRounds == 1
+	for i := 0; i < *numberOfRounds; i++ {
+		duel := game.NewGame(playerOne, playerTwo)
+		outcome, err := duel.Play(output)
+		if err != nil {
+			log.Printf("play duel: %v\n", err)
+			os.Exit(1)
+		}
+		if outcome == board.PlayerOneWins {
+			if output {
+				fmt.Println("Player One Wins")
+			}
+			playerOneWins++
+		} else if outcome == board.PlayerTwoWins {
+			if output {
+				fmt.Println("Player Two Wins")
+			}
+			playerTwoWins++
+		} else if outcome == board.Tie {
+			if output {
+				fmt.Println("Tied")
+			}
+			ties++
+		} else {
+			if output {
+				fmt.Println("Undecided")
+			}
+			undecided++
+		}
 	}
-	if outcome == board.PlayerOneWins {
-		fmt.Println("Player One Wins")
-	} else if outcome == board.PlayerTwoWins {
-		fmt.Println("Player Two Wins")
-	} else if outcome == board.Tie {
-		fmt.Println("Tied")
-	} else {
-		fmt.Println("Undecided")
+	if !output {
+		fmt.Printf("Player One Wins: %8d\n", playerOneWins)
+		fmt.Printf("Player Two Wins: %8d\n", playerTwoWins)
+		fmt.Printf("Ties:            %8d\n", ties)
+		fmt.Printf("Undecided:       %8d\n", undecided)
 	}
 }

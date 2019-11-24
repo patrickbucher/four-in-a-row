@@ -26,7 +26,7 @@ func NewGame(playerOne, playerTwo *player.Player) *Game {
 // Play plays through the game until a winner is found, or the board has been
 // filled without a player winning, in which case the game is tied. The outcome
 // is returned.
-func (g *Game) Play() (board.Outcome, error) {
+func (g *Game) Play(output bool) (board.Outcome, error) {
 	b := board.NewBoard()
 	activePlayer := g.PlayerTwo
 	finished := false
@@ -46,7 +46,9 @@ func (g *Game) Play() (board.Outcome, error) {
 		if err != nil {
 			return board.Undecided, fmt.Errorf("apply move %v to board %v: %v", move, b, err)
 		}
-		fmt.Println(brd)
+		if output {
+			fmt.Println(brd)
+		}
 		if outcome != board.Undecided {
 			return outcome, nil
 		}
