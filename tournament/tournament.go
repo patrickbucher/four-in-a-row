@@ -90,8 +90,8 @@ func (t *Tournament) Play(rounds int) (Result, error) {
 					log.Print(err)
 					return
 				}
-				deltaStatOne := PlayerStatistics{oneName, 0, 0, 0, 0, 0}
-				deltaStatTwo := PlayerStatistics{twoName, 0, 0, 0, 0, 0}
+				deltaStatOne := PlayerStatistics{oneName, 1, 0, 0, 0, 0}
+				deltaStatTwo := PlayerStatistics{twoName, 1, 0, 0, 0, 0}
 				if outcome == board.PlayerOneWins {
 					deltaStatOne.Won = 1
 					deltaStatOne.Points = WinPoints
@@ -112,7 +112,7 @@ func (t *Tournament) Play(rounds int) (Result, error) {
 		}
 	}
 	go func() {
-		wg.Done()
+		wg.Wait()
 		close(deltaStatChan)
 	}()
 	for deltaStat := range deltaStatChan {
