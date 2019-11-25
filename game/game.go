@@ -37,7 +37,7 @@ func (g *Game) Play(output bool) (board.Outcome, error) {
 			activePlayer = g.PlayerOne
 		}
 		validMoves := b.ValidMoves()
-		move := (*activePlayer).Play(b)
+		move := (*activePlayer).Play(b.Copy())
 		if !board.Contains(validMoves, *move) {
 			return board.Undecided, fmt.Errorf("illgal move %v from player %v", move, activePlayer)
 		}
