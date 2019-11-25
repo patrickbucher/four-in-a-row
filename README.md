@@ -35,6 +35,6 @@ Run a tournament with multiple rounds for each match/rematch pairing:
 ## TODO
 
 - [ ] interactive gameplay using one or two `STDIN` players
-- [ ] AI player that tries to find a winning move for the current round
+- [x] AI player that tries to find a winning move for the current round
 - [ ] AI player that applies Minimax algorithm for the next `n` rounds
 - [ ] AI player applying evaluation function on current board (three in a row with potential)

@@ -15,8 +15,8 @@ func main() {
 		log.Fatalf("unable to play tournament with %d rounds", *numberOfRounds)
 	}
 	t := tournament.NewTournament()
-	t.AddPlayer("Randy Random I.", player.NewRandomPlayer)
-	t.AddPlayer("Randy Random II.", player.NewRandomPlayer)
+	t.AddPlayer("Randy Random", player.NewRandomPlayer)
+	t.AddPlayer("Winnie Move", player.NewWinningMovePlayer)
 	result, err := t.Play(*numberOfRounds)
 	if err != nil {
 		log.Fatal(err)
